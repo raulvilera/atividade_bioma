@@ -7,7 +7,7 @@
     <style>
         body {
             background-color: #2c3e50;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
             color: #333;
@@ -19,9 +19,9 @@
         }
         
         .card {
-            background-color: #e0f7fa;
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
             border-radius: 10px;
-            padding: 20px;
+            padding: 25px;
             margin-bottom: 30px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(255, 255, 255, 0.3) inset;
             position: relative;
@@ -35,101 +35,176 @@
         }
         
         .school-name {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            grid-column: 1 / span 2;
+            margin-bottom: 15px;
+            color: #006064;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .activity-title {
             font-size: 22px;
             font-weight: bold;
             text-align: center;
             grid-column: 1 / span 2;
-            margin-bottom: 15px;
-        }
-        
-        .activity-title {
-            font-size: 20px;
-            font-weight: bold;
-            text-align: center;
-            grid-column: 1 / span 2;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            color: #00838f;
         }
         
         .form-group {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
         
         label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
+            color: #006064;
         }
         
         select, input {
             width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 10px;
+            border: 2px solid #b2ebf2;
+            border-radius: 6px;
             box-sizing: border-box;
+            background-color: white;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        select:focus, input:focus {
+            border-color: #006064;
+            outline: none;
+        }
+        
+        .date-input-container {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .date-input-container::after {
+            content: "📅";
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
         }
         
         .question {
             margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         
         .question-number {
             font-weight: bold;
             margin-bottom: 10px;
             font-size: 18px;
+            color: #006064;
+            border-bottom: 2px solid #b2ebf2;
+            padding-bottom: 5px;
         }
         
         .question-text {
             margin-bottom: 15px;
+            font-size: 16px;
+            line-height: 1.5;
         }
         
         .question-image {
             max-width: 100%;
-            margin-bottom: 15px;
+            margin: 15px 0;
             border-radius: 8px;
             display: block;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         
         .options {
-            margin-left: 20px;
+            margin-left: 10px;
         }
         
         .option {
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .option-input {
+            margin-right: 10px;
+            margin-top: 3px;
+        }
+        
+        .option-label {
+            display: inline-block;
+            width: 25px;
+            font-weight: bold;
+            color: #006064;
+        }
+        
+        .option-text {
+            flex: 1;
         }
         
         .submit-btn {
-            background-color: #3498db;
+            background: linear-gradient(to bottom, #3498db, #2980b9);
             color: white;
             border: none;
-            padding: 12px 20px;
-            border-radius: 5px;
+            padding: 15px 30px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
             display: block;
-            margin: 20px auto;
+            margin: 30px auto;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s;
         }
         
         .submit-btn:hover {
-            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+            background: linear-gradient(to bottom, #2980b9, #3498db);
         }
         
         .result {
             text-align: center;
             font-weight: bold;
             margin-top: 20px;
-            padding: 15px;
-            border-radius: 5px;
+            padding: 20px;
+            border-radius: 8px;
             display: none;
+            font-size: 18px;
         }
         
         .correct {
             background-color: #d4edda;
             color: #155724;
+            border: 2px solid #c3e6cb;
         }
         
         .incorrect {
             background-color: #f8d7da;
             color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+        
+        .student-dropdown {
+            grid-column: 1 / span 2;
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                grid-template-columns: 1fr;
+            }
+            
+            .school-name, .activity-title, .student-dropdown {
+                grid-column: 1;
+            }
         }
     </style>
 </head>
@@ -140,19 +215,11 @@
             <div class="activity-title">ATIVIDADE DE CIÊNCIAS (3º BIMESTRE)</div>
             
             <div class="header">
-                <div class="form-group">
-                    <label for="turma">TURMA:</label>
-                    <select id="turma" onchange="filterStudents()">
-                        <option value="">Selecione a turma</option>
-                        <option value="7A">7º ANO A</option>
-                        <option value="7B">7º ANO B</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
+                <div class="form-group student-dropdown">
                     <label for="student">NOME:</label>
                     <select id="student" onchange="fillStudentData()">
                         <option value="">Selecione o aluno</option>
+                        <!-- Os alunos serão preenchidos via JavaScript -->
                     </select>
                 </div>
                 
@@ -168,7 +235,9 @@
                 
                 <div class="form-group">
                     <label for="date">DATA:</label>
-                    <input type="date" id="date">
+                    <div class="date-input-container">
+                        <input type="date" id="date">
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -260,163 +329,156 @@
             { id: 141, name: "PIETRO MARTINS NOBRE", number: "41", class: "7º ANO B", email: "00001141671967SP@al.educacao.sp.gov.br" }
         ];
 
-        // Banco de questões
+        // Banco de questões contextualizadas
         const questionsBank = [
             {
-                question: "Observe a imagem de um ecossistema aquático. Quais são os principais fatores abióticos que influenciam este ambiente?",
-                image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                question: "Maria observou em seu jardim que as minhocas apareciam na superfície do solo após fortes chuvas. Qual é a principal razão para este comportamento das minhocas?",
+                image: "https://images.unsplash.com/photo-1578645510441-e1e5c0265d6c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
                 options: [
-                    "Peixes, algas e corais",
-                    "Salinidade, temperatura e luz solar",
-                    "Plantas terrestres, rochas e oxigênio",
-                    "Seres humanos, barcos e redes de pesca"
-                ],
-                correct: 1
-            },
-            {
-                question: "Analise o gráfico que mostra a distribuição de biomas brasileiros. Qual bioma ocupa a maior extensão territorial no Brasil?",
-                image: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
-                options: [
-                    "Mata Atlântica",
-                    "Cerrado",
-                    "Amazônia",
-                    "Caatinga"
+                    "Elas saem para se alimentar de folhas molhadas",
+                    "As minhocas precisam de luz solar para realizar fotossíntese",
+                    "O solo encharcado dificulta a respiração das minhocas",
+                    "Elas fogem dos predadores que se abrigam da chuva"
                 ],
                 correct: 2
             },
             {
-                question: "A Mata Atlântica é considerada um hotspot de biodiversidade. O que significa essa classificação?",
-                image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                question: "João notou que ao colocar uma moeda no fundo de uma piscina, ela parecia estar mais próxima da superfície do que realmente estava. Qual fenômeno óptico explica essa observação?",
+                image: "https://images.unsplash.com/photo-1575429198097-0414ec08e8cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
                 options: [
-                    "É uma área com temperatura muito elevada",
-                    "É uma região prioritária para preservação por sua biodiversidade e ameaças",
-                    "É um local com muitas fontes termais",
-                    "É uma área com solo muito fértil para agricultura"
+                    "Reflexão da luz",
+                    "Refração da luz",
+                    "Dispersão da luz",
+                    "Absorção da luz"
                 ],
                 correct: 1
             },
             {
-                question: "Observe a imagem do Cerrado. Qual adaptação das plantas deste bioma permite sua sobrevivência durante longos períodos de seca?",
-                image: "https://images.unsplash.com/photo-1599204606395-ede983387a81?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                question: "Ana estava cozinhando e percebeu que ao adicionar sal na água fervente, a ebulição parou momentaneamente. Por que isso acontece?",
+                image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
                 options: [
-                    "Folhas largas para maior captação de luz",
-                    "Raízes profundas para buscar água no lençol freático",
-                    "Caule fino para economizar energia",
-                    "Flores coloridas para atrair polinizadores"
+                    "O sal absorve o calor da água",
+                    "A adição de sal aumenta o ponto de ebulição da água",
+                    "O sal neutraliza as bolhas de vapor",
+                    "O sal causa uma reação química que consome energia"
                 ],
                 correct: 1
             },
             {
-                question: "Analise a tabela com dados sobre a biodiversidade de diferentes biomas. Qual bioma apresenta a maior porcentagem de espécies endêmicas?",
-                image: "https://images.unsplash.com/photo-1589652717521-10c0d092dea9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                question: "Pedro observou que durante o inverno, os fios elétricos entre postes ficavam mais esticados do que no verão. Qual propriedade física explica essa diferença?",
+                image: "https://images.unsplash.com/photo-1583317032320-2b2103f6e8a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
                 options: [
-                    "Amazônia",
-                    "Pantanal",
-                    "Mata Atlântica",
-                    "Pampa"
+                    "Dilatação térmica dos metais",
+                    "Contração térmica dos metais",
+                    "Eletrização por atrito",
+                    "Condutividade elétrica"
+                ],
+                correct: 1
+            },
+            {
+                question: "Carla notou que ao colocar gelo em seu suco, o copo ficou molhado por fora. Como se chama esse fenômeno e por que ele ocorre?",
+                image: "https://images.unsplash.com/photo-1522992319-0365e5f11656?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                options: [
+                    "Evaporação - a água do suco passa através do vidro",
+                    "Condensação - o vapor de água do ar se condensa na superfície fria",
+                    "Solidificação - o ar ao redor se transforma em água",
+                    "Fusão - o gelo derrete e vaza pelo copo"
+                ],
+                correct: 1
+            },
+            {
+                question: "Em uma viagem à praia, Marcos notou que a areia ficava muito quente ao sol, mas a água do mar permanecia relativamente fresca. Qual propriedade explica essa diferença?",
+                image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                options: [
+                    "A água tem menor calor específico que a areia",
+                    "A areia tem maior condutividade térmica que a água",
+                    "A água tem maior calor específico que a areia",
+                    "A areia reflete mais a luz solar que a água"
                 ],
                 correct: 2
             },
             {
-                question: "Observe a imagem de um manguezal. Por que este ecossistema é considerado um 'berçário natural'?",
-                image: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                question: "Laura observou que ao bater leite com chocolate em pó, formava-se uma espuma consistente. Qual processo físico-químico está envolvido na formação dessa espuma?",
+                image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
                 options: [
-                    "Porque muitas espécies de aves fazem ninhos nas árvores",
-                    "Porque serve como local de reprodução e crescimento de muitas espécies marinhas",
-                    "Porque as águas são calmas e adequadas para o nascimento de filhotes de mamíferos",
-                    "Porque o solo é fértil para o crescimento de diversas plantas"
+                    "Solidificação das proteínas do leite",
+                    "Incorporação de ar pelas proteínas que agem como surfactantes",
+                    "Fermentação do chocolate pelo lactobacilos",
+                    "Evaporação da água do leite"
                 ],
                 correct: 1
             },
             {
-                question: "Qual fator abiótico é fundamental para a caracterização dos diferentes ecossistemas aquáticos?",
-                image: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                question: "Durante um piquenique, Ricardo notou que formigas encontravam migalhas de pão rapidamente. Como as formigas localizam fontes de alimento?",
+                image: "https://images.unsplash.com/photo-1532495018671-5a5a039c04f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
                 options: [
-                    "Quantidade de peixes",
-                    "Salinidade da água",
-                    "Presença de algas",
-                    "Profundidade média"
+                    "Pela visão aguçada que detecta pequenas partículas",
+                    "Pelo olfato desenvolvido que percebe compostos voláteis",
+                    "Pela audição sensível que capta o som das migalhas caindo",
+                    "Pela percepção de vibrações no solo"
                 ],
                 correct: 1
             },
             {
-                question: "Observe o gráfico com a taxa de desmatamento da Mata Atlântica ao longo dos anos. O que podemos concluir sobre a situação atual deste bioma?",
-                image: "https://images.unsplash.com/photo-1476820865390-c52aeebb9891?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                question: "Juliana observou que ao colocar uvas-passas em um refrigerante, elas subiam e desciam continuamente. Qual fenômeno explica esse movimento?",
+                image: "https://images.unsplash.com/photo-1622489856986-5e20e5ddfd5a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
                 options: [
-                    "O desmatamento aumentou significativamente na última década",
-                    "A Mata Atlântica está completamente recuperada",
-                    "Apesar da redução no desmatamento, ainda há ameaças à sua preservação",
-                    "O bioma foi completamente destruído e não pode ser recuperado"
+                    "Capilaridade - as passas absorvem o líquido",
+                    "Convecção - correntes de líquido movem as passas",
+                    "Efervescência - bolhas de gás grudam e desgrudam das passas",
+                    "Dissolução - o açúcar das passas se dissolve no refrigerante"
                 ],
                 correct: 2
             },
             {
-                question: "Qual é a principal ameaça aos ecossistemas de água doce atualmente?",
-                image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                question: "Em um dia quente, Carlos notou que o piso de cerâmica estava mais fresco que o carpete, mesmo estando no mesmo ambiente. Por que isso acontece?",
+                image: "https://images.unsplash.com/photo-1581546104499-c8135c2fbc42?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
                 options: [
-                    "Aumento da salinidade",
-                    "Poluição por atividades humanas",
-                    "Diminuição da temperatura",
-                    "Excesso de chuvas"
+                    "A cerâmica reflete mais a luz solar que o carpete",
+                    "O carpete tem maior condutividade térmica que a cerâmica",
+                    "A cerâmica tem maior condutividade térmica que o carpete",
+                    "O carpete absorve menos calor do ambiente que a cerâmica"
                 ],
-                correct: 1
+                correct: 2
             },
             {
-                question: "Por que o Cerrado é conhecido como 'berço das águas' do Brasil?",
-                image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                question: "Ana percebeu que ao misturar vinagre com bicarbonato de sódio, ocorria efervescência. Que gás é liberado nessa reação química?",
+                image: "https://images.unsplash.com/photo-1584735175097-719d848f8449?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
                 options: [
-                    "Porque possui o maior número de cachoeiras do país",
-                    "Porque abriga as nascentes de importantes rios que abastecem diversas bacias hidrográficas",
-                    "Porque é o bioma com maior índice pluviométrico",
-                    "Porque suas plantas possuem grande capacidade de armazenamento de água"
+                    "Gás oxigênio (O₂)",
+                    "Gás hidrogênio (H₂)",
+                    "Dióxido de carbono (CO₂)",
+                    "Gás nitrogênio (N₂)"
                 ],
-                correct: 1
+                correct: 2
             },
             {
-                question: "Observe a imagem de uma onça-pintada. Por que este animal é considerado uma espécie indicadora da qualidade ambiental?",
-                image: "https://images.unsplash.com/photo-1546182990-dffeafbe841d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                question: "Pedro observou que ao esfregar um balão de borracha em seu cabelo, o balão passava a atrair pedaços de papel. Qual é o nome desse fenômeno?",
+                image: "https://images.unsplash.com/photo-1585435557343-3b092031d5b5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
                 options: [
-                    "Porque precisa de grandes áreas preservadas para sobreviver",
-                    "Porque se adapta facilmente a ambientes urbanos",
-                    "Porque se alimenta exclusivamente de plantas",
-                    "Porque vive em grupos muito numerosos"
-                ],
-                correct: 0
-            },
-            {
-                question: "Qual a principal característica do solo da Caatinga que influencia na adaptação das plantas deste bioma?",
-                image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
-                options: [
-                    "Solo muito fértil com alta concentração de nutrientes",
-                    "Solo rochoso e raso com baixa retenção de água",
-                    "Solo argiloso com alta capacidade de reter água",
-                    "Solo arenoso com presença de dunas"
+                    "Magnetismo",
+                    "Eletrização por atrito",
+                    "Indução eletromagnética",
+                    "Condução elétrica"
                 ],
                 correct: 1
             }
         ];
 
-        // Função para filtrar alunos por turma
-        function filterStudents() {
-            const turmaSelect = document.getElementById('turma');
+        // Função para preencher o dropdown de alunos
+        function populateStudentDropdown() {
             const studentSelect = document.getElementById('student');
-            const selectedTurma = turmaSelect.value;
             
-            // Limpar dropdown de alunos
-            studentSelect.innerHTML = '<option value="">Selecione o aluno</option>';
+            // Ordenar alunos por nome
+            const sortedStudents = [...students].sort((a, b) => a.name.localeCompare(b.name));
             
-            if (selectedTurma) {
-                // Filtrar alunos pela turma selecionada
-                const filteredStudents = students.filter(student => student.class.includes(selectedTurma));
-                
-                // Adicionar alunos filtrados ao dropdown
-                filteredStudents.forEach(student => {
-                    const option = document.createElement('option');
-                    option.value = student.id;
-                    option.textContent = student.name;
-                    studentSelect.appendChild(option);
-                });
-            }
+            // Adicionar alunos ao dropdown
+            sortedStudents.forEach(student => {
+                const option = document.createElement('option');
+                option.value = student.id;
+                option.textContent = student.name;
+                studentSelect.appendChild(option);
+            });
         }
 
         // Função para preencher os dados do aluno selecionado
@@ -457,15 +519,18 @@
                 const questionDiv = document.createElement('div');
                 questionDiv.className = 'card question';
                 
+                const optionLetters = ['A', 'B', 'C', 'D'];
+                
                 questionDiv.innerHTML = `
                     <div class="question-number">Questão ${index + 1}:</div>
                     <div class="question-text">${q.question}</div>
-                    <img src="${q.image}" alt="Imagem da questão" class="question-image">
+                    ${q.image ? `<img src="${q.image}" alt="Imagem da questão" class="question-image">` : ''}
                     <div class="options">
                         ${q.options.map((option, i) => `
                             <div class="option">
-                                <input type="radio" id="q${index}_opt${i}" name="q${index}" value="${i}">
-                                <label for="q${index}_opt${i}">${option}</label>
+                                <input type="radio" class="option-input" id="q${index}_opt${i}" name="q${index}" value="${i}">
+                                <label class="option-label" for="q${index}_opt${i}">${optionLetters[i]})</label>
+                                <div class="option-text">${option}</div>
                             </div>
                         `).join('')}
                     </div>
@@ -480,7 +545,22 @@
 
         // Função para verificar as respostas
         function checkAnswers() {
+            const studentSelect = document.getElementById('student');
+            const dateInput = document.getElementById('date');
             const resultDiv = document.getElementById('result');
+            
+            // Verificar se o aluno foi selecionado
+            if (!studentSelect.value) {
+                alert('Por favor, selecione seu nome antes de enviar as respostas.');
+                return;
+            }
+            
+            // Verificar se a data foi selecionada
+            if (!dateInput.value) {
+                alert('Por favor, selecione a data antes de enviar as respostas.');
+                return;
+            }
+            
             let correctAnswers = 0;
             
             window.selectedQuestions.forEach((q, index) => {
@@ -497,12 +577,54 @@
             resultDiv.className = `result ${score >= 70 ? 'correct' : 'incorrect'}`;
             resultDiv.style.display = 'block';
             
+            // Enviar dados para o Google Sheets
+            sendDataToGoogleSheets(score);
+            
             // Rolagem suave para o resultado
             resultDiv.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Gerar questões quando a página carregar
+        // Função para enviar dados para o Google Sheets
+        function sendDataToGoogleSheets(score) {
+            const studentSelect = document.getElementById('student');
+            const dateInput = document.getElementById('date');
+            const selectedStudentId = studentSelect.value;
+            
+            if (!selectedStudentId) return;
+            
+            const student = students.find(s => s.id == selectedStudentId);
+            if (!student) return;
+            
+            // Dados a serem enviados
+            const data = {
+                studentName: student.name,
+                studentNumber: student.number,
+                studentClass: student.class,
+                studentEmail: student.email,
+                date: dateInput.value,
+                score: score.toFixed(1)
+            };
+            
+            // URL do Google Apps Script (substitua com o URL do seu script)
+            const scriptURL = 'https://script.google.com/macros/s/SEU_SCRIPT_ID/exec';
+            
+            // Enviar dados via fetch
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .catch(error => {
+                console.error('Erro ao enviar dados:', error);
+            });
+        }
+
+        // Inicializar a página
         window.onload = function() {
+            populateStudentDropdown();
             generateRandomQuestions();
             
             // Definir data atual como padrão
@@ -516,6 +638,14 @@
             
             const formattedToday = `${yyyy}-${mm}-${dd}`;
             document.getElementById('date').value = formattedToday;
+            
+            // Tornar o campo de data mais amigável
+            const dateContainer = document.querySelector('.date-input-container');
+            const dateInput = document.getElementById('date');
+            
+            dateContainer.addEventListener('click', function() {
+                dateInput.showPicker();
+            });
         };
     </script>
 </body>
