@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atividade de Ciências - 3º Bimestre</title>
+    <style>
+        body {
+            background-color: #2c3e50;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background-color: #e0f7fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(255, 255, 255, 0.3) inset;
+            position: relative;
+        }
+        
+        .header {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .school-name {
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+            grid-column: 1 / span 2;
+            margin-bottom: 15px;
+        }
+        
+        .activity-title {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            grid-column: 1 / span 2;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 10px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+        }
+        
+        .question-number {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .question-text {
+            margin-bottom: 15px;
+        }
+        
+        .question-image {
+            max-width: 100%;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            display: block;
+        }
+        
+        .options {
+            margin-left: 20px;
+        }
+        
+        .option {
+            margin-bottom: 8px;
+        }
+        
+        .submit-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 20px auto;
+        }
+        
+        .submit-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .result {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .correct {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="school-name">E.E. WANDA MASCAGNI DE SÁ</div>
+            <div class="activity-title">ATIVIDADE DE CIÊNCIAS (3º BIMESTRE)</div>
+            
+            <div class="header">
+                <div class="form-group">
+                    <label for="turma">TURMA:</label>
+                    <select id="turma" onchange="filterStudents()">
+                        <option value="">Selecione a turma</option>
+                        <option value="7A">7º ANO A</option>
+                        <option value="7B">7º ANO B</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="student">NOME:</label>
+                    <select id="student" onchange="fillStudentData()">
+                        <option value="">Selecione o aluno</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="number">Nº:</label>
+                    <input type="text" id="number" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="class">SÉRIE:</label>
+                    <input type="text" id="class" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="date">DATA:</label>
+                    <input type="date" id="date">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">E-MAIL:</label>
+                    <input type="email" id="email" readonly>
+                </div>
+            </div>
+        </div>
+
+        <form id="quiz-form">
+            <!-- As questões serão inseridas aqui pelo JavaScript -->
+        </form>
+
+        <button class="submit-btn" onclick="checkAnswers()">Enviar Respostas</button>
+        
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        // Dados dos alunos
+        const students = [
+            // 7º ANO A
+            { id: 1, name: "ALICE CARDOSO DE ALCANTARA", number: "1", class: "7º ANO A", email: "00001158646847SP@al.educacao.sp.gov.br" },
+            { id: 2, name: "ANA CAROLINA GONCALVES NASCIMENTO DE LIMA", number: "2", class: "7º ANO A", email: "00001158650103SP@al.educacao.sp.gov.br" },
+            { id: 3, name: "ANA LUIZA VALENCA PAIVA", number: "3", class: "7º ANO A", email: "00001131912925SP@al.educacao.sp.gov.br" },
+            { id: 5, name: "CARLOS EDUARDO MENEZES MACHADO", number: "5", class: "7º ANO A", email: "00001150749064SP@al.educacao.sp.gov.br" },
+            { id: 7, name: "EVANDRO CUTOLO TEIXEIRA", number: "7", class: "7º ANO A", email: "00001165035108SP@al.educacao.sp.gov.br" },
+            { id: 8, name: "GABRIELA SANTOS COSTA", number: "8", class: "7º ANO A", email: "00001156125972SP@al.educacao.sp.gov.br" },
+            { id: 9, name: "GLEYSSON PEREIRA DOS SANTOS", number: "9", class: "7º ANO A", email: "00001150727329SP@al.educacao.sp.gov.br" },
+            { id: 10, name: "GUILHERME CARMO RODRIGUES", number: "10", class: "7º ANO A", email: "00001141438380SP@al.educacao.sp.gov.br" },
+            { id: 11, name: "GUSTAVO HENRIQUE DA SILVA", number: "11", class: "7º ANO A", email: "00001150736458SP@al.educacao.sp.gov.br" },
+            { id: 12, name: "KELVIN DUARTE GONCALVES", number: "12", class: "7º ANO A", email: "00001239229227SP@al.educacao.sp.gov.br" },
+            { id: 13, name: "KEVIN LELIS DA SILVA SIMAO", number: "13", class: "7º ANO A", email: "0000115070925XSP@al.educacao.sp.gov.br" },
+            { id: 14, name: "LAURA VITORIA ROCHA", number: "14", class: "7º ANO A", email: "00001158850979SP@al.educacao.sp.gov.br" },
+            { id: 17, name: "LUCAS EDUARDO DA SILVA SANTANA", number: "17", class: "7º ANO A", email: "00001165287286SP@al.educacao.sp.gov.br" },
+            { id: 21, name: "MIGUEL LIMA DE MESQUITA", number: "21", class: "7º ANO A", email: "00001139871869sp@al.educacao.sp.gov.br" },
+            { id: 23, name: "NICOLAS ROCHA SILVA", number: "23", class: "7º ANO A", email: "00001141568950SP@al.educacao.sp.gov.br" },
+            { id: 24, name: "PAOLLA MICHELLINE DOS SANTOS MARQUES", number: "24", class: "7º ANO A", email: "00001144391866SP@al.educacao.sp.gov.br" },
+            { id: 25, name: "PEDRO HENRIQUE CORREA DE BRITO", number: "25", class: "7º ANO A", email: "00001147886684SP@al.educacao.sp.gov.br" },
+            { id: 27, name: "RAFAEL CORREIA MENDES", number: "27", class: "7º ANO A", email: "00001158895045SP@al.educacao.sp.gov.br" },
+            { id: 28, name: "RYAN GABRIEL PEREIRA DE SOUSA", number: "28", class: "7º ANO A", email: "00001147690029SP@al.educacao.sp.gov.br" },
+            { id: 29, name: "SAMUEL ALVES DA COSTA", number: "29", class: "7º ANO A", email: "00001207632648SP@al.educacao.sp.gov.br" },
+            { id: 30, name: "SOFIA AZEREDO CUBAS", number: "30", class: "7º ANO A", email: "00001214800063SP@al.educacao.sp.gov.br" },
+            { id: 31, name: "SOPHIA LACERDA ANDRADE", number: "31", class: "7º ANO A", email: "00001150709169SP@al.educacao.sp.gov.br" },
+            { id: 33, name: "THAYLLA DUANNY VENANCIO SCAQUITO", number: "33", class: "7º ANO A", email: "00001165217119SP@al.educacao.sp.gov.br" },
+            { id: 34, name: "THAYS RODRIGUES DA SILVA", number: "34", class: "7º ANO A", email: "00001150736513SP@al.educacao.sp.gov.br" },
+            { id: 35, name: "VICTOR HENRIQUE BENVINDO", number: "35", class: "7º ANO A", email: "00001207637142SP@al.educacao.sp.gov.br" },
+            { id: 36, name: "FELIPE GONZALES PATRICIO ALVES", number: "36", class: "7º ANO A", email: "00001161881268SP@al.educacao.sp.gov.br" },
+            { id: 37, name: "ISAAC FERNANDES DE ANDRADE", number: "37", class: "7º ANO A", email: "00001150770314SP@al.educacao.sp.gov.br" },
+            { id: 38, name: "HELOISA BARRETO PEREIRA DA SILVA", number: "38", class: "7º ANO A", email: "0000116505145XSP@al.educacao.sp.gov.br" },
+            { id: 39, name: "MIKAELLEN VIEIRA FERNANDES DOS SANTOS", number: "39", class: "7º ANO A", email: "00001158878163SP@al.educacao.sp.gov.br" },
+            { id: 40, name: "BRYAN DINIZ SILVA", number: "40", class: "7º ANO A", email: "00001150709194SP@al.educacao.sp.gov.br" },
+            { id: 41, name: "RAPHAEL MATHIAS NUNES MIRANDA", number: "41", class: "7º ANO A", email: "0000115889692XSP@al.educacao.sp.gov.br" },
+            { id: 42, name: "LEONARDO DE AVELAR CARVALHO", number: "42", class: "7º ANO A", email: "00001150774915SP@al.educacao.sp.gov.br" },
+            { id: 43, name: "ENZO MARIANI BORGES", number: "43", class: "7º ANO A", email: "00001141299082SP@al.educacao.sp.gov.br" },
+            { id: 44, name: "LETICIA CUSTODIO LIMA", number: "44", class: "7º ANO A", email: "00001134788150SP@al.educacao.sp.gov.br" },
+            
+            // 7º ANO B
+            { id: 101, name: "ANGELLO GABRIEL CUTOLO TEIXEIRA", number: "1", class: "7º ANO B", email: "00001164997324SP@al.educacao.sp.gov.br" },
+            { id: 102, name: "ARTHUR HENRIQUE MARQUES ENDRES", number: "2", class: "7º ANO B", email: "00001158658783SP@al.educacao.sp.gov.br" },
+            { id: 103, name: "BIANCA CRISTINA DA SILVA SANTOS", number: "3", class: "7º ANO B", email: "00001247024416SP@al.educacao.sp.gov.br" },
+            { id: 104, name: "BRAYAN DA SILVA FERREIRA", number: "4", class: "7º ANO B", email: "00001132158357SP@al.educacao.sp.gov.br" },
+            { id: 105, name: "BRAYAN DUARTE DA SILVA", number: "5", class: "7º ANO B", email: "00001141527078SP@al.educacao.sp.gov.br" },
+            { id: 106, name: "BRUNO LUIZ NASCIMENTO DA SILVA", number: "6", class: "7º ANO B", email: "00001150747158SP@al.educacao.sp.gov.br" },
+            { id: 107, name: "DANIEL RODRIGUES SANTOS DIAS", number: "7", class: "7º ANO B", email: "00001142587484SP@al.educacao.sp.gov.br" },
+            { id: 108, name: "DIEGO BARRIO NOVO AMARAL DE ANDRADE", number: "8", class: "7º ANO B", email: "00001159413368sp@al.educacao.sp.gov.br" },
+            { id: 110, name: "FABRICIO LORENZO PARMA", number: "10", class: "7º ANO B", email: "00001207876665SP@al.educacao.sp.gov.br" },
+            { id: 111, name: "GABRIELA PAULINA FERREIRA MARTINS", number: "11", class: "7º ANO B", email: "00001158798490SP@al.educacao.sp.gov.br" },
+            { id: 113, name: "HYLLARY VICTORIA NERCIR DE FRANÇA", number: "13", class: "7º ANO B", email: "00001207922286SP@al.educacao.sp.gov.br" },
+            { id: 114, name: "JHONAS KEYRRISON TROCATIS DA SILVA", number: "14", class: "7º ANO B", email: "00001141455183sp@al.educacao.sp.gov.br" },
+            { id: 115, name: "JULIA VITORIA SEVERA LINS", number: "15", class: "7º ANO B", email: "00001141611387SP@al.educacao.sp.gov.br" },
+            { id: 117, name: "KAMILLY VITÓRIA RODRIGUES DE SOUZA", number: "17", class: "7º ANO B", email: "0000115074800XSP@al.educacao.sp.gov.br" },
+            { id: 118, name: "KESIA DOS SANTOS SOSTE", number: "18", class: "7º ANO B", email: "00001158837161SP@al.educacao.sp.gov.br" },
+            { id: 119, name: "LAURA BORGES AZEVEDO", number: "19", class: "7º ANO B", email: "00001155509134SP@al.educacao.sp.gov.br" },
+            { id: 120, name: "LUAN DANTAS NICOLUCCI", number: "20", class: "7º ANO B", email: "00001158855680SP@al.educacao.sp.gov.br" },
+            { id: 121, name: "LUAN RIBEIRO SILVA", number: "21", class: "7º ANO B", email: "00001214888070SP@al.educacao.sp.gov.br" },
+            { id: 122, name: "MANUELA ANGELICA TRIANA DA SILVA", number: "22", class: "7º ANO B", email: "00001158862015SP@al.educacao.sp.gov.br" },
+            { id: 123, name: "MARCELO GOMES THOMAZ", number: "23", class: "7º ANO B", email: "00001150725096SP@al.educacao.sp.gov.br" },
+            { id: 124, name: "MARCOS CELIO DE JESUS", number: "24", class: "7º ANO B", email: "00001141426456sp@al.educacao.sp.gov.br" },
+            { id: 126, name: "MARIA EDUARDA MACHADO DE LIMA", number: "26", class: "7º ANO B", email: "00001132587773SP@al.educacao.sp.gov.br" },
+            { id: 128, name: "NICOLLAS RODRIGUES TAVARES", number: "28", class: "7º ANO B", email: "00001141557745SP@al.educacao.sp.gov.br" },
+            { id: 130, name: "PAULO CESAR LAMBERT GONÇALVES", number: "30", class: "7º ANO B", email: "00001251497718SP@al.educacao.sp.gov.br" },
+            { id: 133, name: "VICTOR HUGO PRADO SANTOS DE BARROS", number: "33", class: "7º ANO B", email: "0000115070536XSP@al.educacao.sp.gov.br" },
+            { id: 134, name: "WALLIF LEANDRO DE JESUS LESSA", number: "34", class: "7º ANO B", email: "00001141637728SP@al.educacao.sp.gov.br" },
+            { id: 136, name: "CRISTIANO MARQUES BATISTA DE SOUZA", number: "36", class: "7º ANO B", email: "00001141637789SP@al.educacao.sp.gov.br" },
+            { id: 137, name: "SOPHIA FRANCA DE CARVALHO", number: "37", class: "7º ANO B", email: "00001158908155SP@al.educacao.sp.gov.br" },
+            { id: 139, name: "FELIPE DE MEDEIROS OLIVEIRA", number: "39", class: "7º ANO B", email: "00001146420249SP@al.educacao.sp.gov.br" },
+            { id: 140, name: "PEDRO HENRIQUE OLIVEIRA GOMES", number: "40", class: "7º ANO B", email: "00001141679231SP@al.educacao.sp.gov.br" },
+            { id: 141, name: "PIETRO MARTINS NOBRE", number: "41", class: "7º ANO B", email: "00001141671967SP@al.educacao.sp.gov.br" }
+        ];
+
+        // Banco de questões
+        const questionsBank = [
+            {
+                question: "Observe a imagem de um ecossistema aquático. Quais são os principais fatores abióticos que influenciam este ambiente?",
+                image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                options: [
+                    "Peixes, algas e corais",
+                    "Salinidade, temperatura e luz solar",
+                    "Plantas terrestres, rochas e oxigênio",
+                    "Seres humanos, barcos e redes de pesca"
+                ],
+                correct: 1
+            },
+            {
+                question: "Analise o gráfico que mostra a distribuição de biomas brasileiros. Qual bioma ocupa a maior extensão territorial no Brasil?",
+                image: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                options: [
+                    "Mata Atlântica",
+                    "Cerrado",
+                    "Amazônia",
+                    "Caatinga"
+                ],
+                correct: 2
+            },
+            {
+                question: "A Mata Atlântica é considerada um hotspot de biodiversidade. O que significa essa classificação?",
+                image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                options: [
+                    "É uma área com temperatura muito elevada",
+                    "É uma região prioritária para preservação por sua biodiversidade e ameaças",
+                    "É um local com muitas fontes termais",
+                    "É uma área com solo muito fértil para agricultura"
+                ],
+                correct: 1
+            },
+            {
+                question: "Observe a imagem do Cerrado. Qual adaptação das plantas deste bioma permite sua sobrevivência durante longos períodos de seca?",
+                image: "https://images.unsplash.com/photo-1599204606395-ede983387a81?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                options: [
+                    "Folhas largas para maior captação de luz",
+                    "Raízes profundas para buscar água no lençol freático",
+                    "Caule fino para economizar energia",
+                    "Flores coloridas para atrair polinizadores"
+                ],
+                correct: 1
+            },
+            {
+                question: "Analise a tabela com dados sobre a biodiversidade de diferentes biomas. Qual bioma apresenta a maior porcentagem de espécies endêmicas?",
+                image: "https://images.unsplash.com/photo-1589652717521-10c0d092dea9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                options: [
+                    "Amazônia",
+                    "Pantanal",
+                    "Mata Atlântica",
+                    "Pampa"
+                ],
+                correct: 2
+            },
+            {
+                question: "Observe a imagem de um manguezal. Por que este ecossistema é considerado um 'berçário natural'?",
+                image: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                options: [
+                    "Porque muitas espécies de aves fazem ninhos nas árvores",
+                    "Porque serve como local de reprodução e crescimento de muitas espécies marinhas",
+                    "Porque as águas são calmas e adequadas para o nascimento de filhotes de mamíferos",
+                    "Porque o solo é fértil para o crescimento de diversas plantas"
+                ],
+                correct: 1
+            },
+            {
+                question: "Qual fator abiótico é fundamental para a caracterização dos diferentes ecossistemas aquáticos?",
+                image: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                options: [
+                    "Quantidade de peixes",
+                    "Salinidade da água",
+                    "Presença de algas",
+                    "Profundidade média"
+                ],
+                correct: 1
+            },
+            {
+                question: "Observe o gráfico com a taxa de desmatamento da Mata Atlântica ao longo dos anos. O que podemos concluir sobre a situação atual deste bioma?",
+                image: "https://images.unsplash.com/photo-1476820865390-c52aeebb9891?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                options: [
+                    "O desmatamento aumentou significativamente na última década",
+                    "A Mata Atlântica está completamente recuperada",
+                    "Apesar da redução no desmatamento, ainda há ameaças à sua preservação",
+                    "O bioma foi completamente destruído e não pode ser recuperado"
+                ],
+                correct: 2
+            },
+            {
+                question: "Qual é a principal ameaça aos ecossistemas de água doce atualmente?",
+                image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                options: [
+                    "Aumento da salinidade",
+                    "Poluição por atividades humanas",
+                    "Diminuição da temperatura",
+                    "Excesso de chuvas"
+                ],
+                correct: 1
+            },
+            {
+                question: "Por que o Cerrado é conhecido como 'berço das águas' do Brasil?",
+                image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                options: [
+                    "Porque possui o maior número de cachoeiras do país",
+                    "Porque abriga as nascentes de importantes rios que abastecem diversas bacias hidrográficas",
+                    "Porque é o bioma com maior índice pluviométrico",
+                    "Porque suas plantas possuem grande capacidade de armazenamento de água"
+                ],
+                correct: 1
+            },
+            {
+                question: "Observe a imagem de uma onça-pintada. Por que este animal é considerado uma espécie indicadora da qualidade ambiental?",
+                image: "https://images.unsplash.com/photo-1546182990-dffeafbe841d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                options: [
+                    "Porque precisa de grandes áreas preservadas para sobreviver",
+                    "Porque se adapta facilmente a ambientes urbanos",
+                    "Porque se alimenta exclusivamente de plantas",
+                    "Porque vive em grupos muito numerosos"
+                ],
+                correct: 0
+            },
+            {
+                question: "Qual a principal característica do solo da Caatinga que influencia na adaptação das plantas deste bioma?",
+                image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                options: [
+                    "Solo muito fértil com alta concentração de nutrientes",
+                    "Solo rochoso e raso com baixa retenção de água",
+                    "Solo argiloso com alta capacidade de reter água",
+                    "Solo arenoso com presença de dunas"
+                ],
+                correct: 1
+            }
+        ];
+
+        // Função para filtrar alunos por turma
+        function filterStudents() {
+            const turmaSelect = document.getElementById('turma');
+            const studentSelect = document.getElementById('student');
+            const selectedTurma = turmaSelect.value;
+            
+            // Limpar dropdown de alunos
+            studentSelect.innerHTML = '<option value="">Selecione o aluno</option>';
+            
+            if (selectedTurma) {
+                // Filtrar alunos pela turma selecionada
+                const filteredStudents = students.filter(student => student.class.includes(selectedTurma));
+                
+                // Adicionar alunos filtrados ao dropdown
+                filteredStudents.forEach(student => {
+                    const option = document.createElement('option');
+                    option.value = student.id;
+                    option.textContent = student.name;
+                    studentSelect.appendChild(option);
+                });
+            }
+        }
+
+        // Função para preencher os dados do aluno selecionado
+        function fillStudentData() {
+            const studentSelect = document.getElementById('student');
+            const numberInput = document.getElementById('number');
+            const classInput = document.getElementById('class');
+            const emailInput = document.getElementById('email');
+            const selectedStudentId = studentSelect.value;
+            
+            if (selectedStudentId) {
+                const student = students.find(s => s.id == selectedStudentId);
+                if (student) {
+                    numberInput.value = student.number;
+                    classInput.value = student.class;
+                    emailInput.value = student.email;
+                }
+            } else {
+                numberInput.value = '';
+                classInput.value = '';
+                emailInput.value = '';
+            }
+        }
+
+        // Função para gerar questões aleatórias
+        function generateRandomQuestions() {
+            const quizForm = document.getElementById('quiz-form');
+            quizForm.innerHTML = '';
+            
+            // Embaralhar questões
+            const shuffledQuestions = [...questionsBank].sort(() => Math.random() - 0.5);
+            
+            // Selecionar 10 questões
+            const selectedQuestions = shuffledQuestions.slice(0, 10);
+            
+            // Gerar HTML para cada questão
+            selectedQuestions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'card question';
+                
+                questionDiv.innerHTML = `
+                    <div class="question-number">Questão ${index + 1}:</div>
+                    <div class="question-text">${q.question}</div>
+                    <img src="${q.image}" alt="Imagem da questão" class="question-image">
+                    <div class="options">
+                        ${q.options.map((option, i) => `
+                            <div class="option">
+                                <input type="radio" id="q${index}_opt${i}" name="q${index}" value="${i}">
+                                <label for="q${index}_opt${i}">${option}</label>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                
+                quizForm.appendChild(questionDiv);
+            });
+            
+            // Armazenar as questões selecionadas para verificação posterior
+            window.selectedQuestions = selectedQuestions;
+        }
+
+        // Função para verificar as respostas
+        function checkAnswers() {
+            const resultDiv = document.getElementById('result');
+            let correctAnswers = 0;
+            
+            window.selectedQuestions.forEach((q, index) => {
+                const selectedOption = document.querySelector(`input[name="q${index}"]:checked`);
+                
+                if (selectedOption && parseInt(selectedOption.value) === q.correct) {
+                    correctAnswers++;
+                }
+            });
+            
+            const score = (correctAnswers / window.selectedQuestions.length) * 100;
+            
+            resultDiv.textContent = `Você acertou ${correctAnswers} de ${window.selectedQuestions.length} questões (${score.toFixed(1)}%)`;
+            resultDiv.className = `result ${score >= 70 ? 'correct' : 'incorrect'}`;
+            resultDiv.style.display = 'block';
+            
+            // Rolagem suave para o resultado
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Gerar questões quando a página carregar
+        window.onload = function() {
+            generateRandomQuestions();
+            
+            // Definir data atual como padrão
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            let mm = today.getMonth() + 1;
+            let dd = today.getDate();
+            
+            if (dd < 10) dd = '0' + dd;
+            if (mm < 10) mm = '0' + mm;
+            
+            const formattedToday = `${yyyy}-${mm}-${dd}`;
+            document.getElementById('date').value = formattedToday;
+        };
+    </script>
+</body>
+</html>
